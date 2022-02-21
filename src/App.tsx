@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BaseSyntheticEvent, useContext, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { Context } from 'index'
 
-function App() {
+const App = () => {
+  const [authData, setAuthData] = useState({ email: '', password: '' })
+  const { auth } = useContext(Context)
+
+  const registration = (event: BaseSyntheticEvent) => {
+    event.preventDefault()
+    auth.registration(authData)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <form onSubmit={ registration }>
+      <input
+        type="email"
+        placeholder="Email"
+        onInput={ (event: BaseSyntheticEvent) => setAuthData({ ...authData, email: event.target.value }) }
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        onInput={ (event: BaseSyntheticEvent) => setAuthData({ ...authData, password: event.target.value }) }
+      />
+
+      <button
+        type="submit"
+      >Зарегистрироваться</button>
+    </form>
+  )
 }
 
-export default App;
+export default observer(App)
