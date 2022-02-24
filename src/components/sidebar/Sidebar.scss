@@ -1,0 +1,7 @@
+@import 'scss/varmix.scss';
+
+.sidebar {
+  width: $sidebarWidth;
+  flex: none;
+  background-color: #ccc;
+}

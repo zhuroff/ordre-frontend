@@ -5,6 +5,7 @@ import AuthLayout from 'layouts/AuthLayout'
 import Preloader from 'components/preloader/Preloader'
 import MainLayout from 'layouts/MainLayout'
 import 'scss/index.scss'
+import MainRoutes from 'routes/MainRoutes'
 
 const App = () => {
   const { auth } = AppContext()
@@ -20,7 +21,9 @@ const App = () => {
           ? <Preloader />
           : !auth.isAuthenticated
             ? <AuthLayout />
-            : <MainLayout />
+            : <MainLayout>
+                <MainRoutes />
+              </MainLayout>
       }
     </>
   )

@@ -1,6 +1,17 @@
-const MainLayout = () => {
+import { ReactNode } from 'react'
+import Header from 'components/header/Header'
+import Sidebar from 'components/sidebar/Sidebar'
+import './MainLayout.scss'
+
+const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <h1>Main layout</h1>
+    <main className="main">
+      <Sidebar />
+      <div className="workspace">
+        <Header />
+        <section className="section">{ children }</section>
+      </div>
+    </main>
   )
 }
 

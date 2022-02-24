@@ -1,8 +1,8 @@
 import { runInAction, makeAutoObservable } from 'mobx'
 import { Authentication } from 'types/AuthTypes'
+import { UserData } from 'types/UserTypes'
 import AuthService from 'services/AuthService'
 import user from './user'
-import { UserData } from 'types/UserTypes'
 
 class AuthStore {
   isAuthenticated = false
