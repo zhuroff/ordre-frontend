@@ -37,19 +37,13 @@ class AuthStore {
     }
   }
 
-  registration({ email, password }: Authentication) {
-    AuthService.registration({ email, password })
-      .then((response) => console.log(response))
-      .catch((error) => console.dir(error))
-  }
-
   login({ email, password }: Authentication) {
     AuthService.login({ email, password })
       .then((data) => {
         runInAction(() => {
           this.isAuthenticated = true
           this.isAuthChecked = true
-          user.setUser(data)
+          // user.setUser(data)
         })
       })
       .catch((error) => console.dir(error))

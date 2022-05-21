@@ -3,6 +3,11 @@ type UserData = {
   id: string
 }
 
+type UserFullData = UserData & {
+  name?: string
+}
+
 export type {
-  UserData
+  UserData,
+  UserFullData
 }

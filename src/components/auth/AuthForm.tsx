@@ -1,40 +1,67 @@
-import { BaseSyntheticEvent, useReducer } from 'react'
+import { FormEvent, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { AppContext } from 'index'
-import { Authentication } from "types/AuthTypes"
+import { AuthenticationMap, RegisterErrorResponse } from "types/AuthTypes"
+import AuthService from 'services/AuthService'
+import messages from 'locales'
 
 const AuthForm = () => {
   const { auth } = AppContext()
 
-  const [authData, setAuthData] = useReducer(
-    (authData: Authentication, payload: Partial<Authentication>) => ({ ...authData, ...payload }),
-    { email: '', password: '' }
-  )
+  const [authData, setAuthData] = useState<AuthenticationMap>(new Map())
+  const [registerErrors, setRegisterErrors] = useState<Map<string, string>>(new Map())
 
-  const registration = (event: BaseSyntheticEvent) => {
+  const registration = (event: FormEvent) => {
     event.preventDefault()
-    auth.registration(authData)
+    AuthService.registration(authData)
+      .then((response) => console.log(response))
+      .then(_ => {
+        registerErrors.clear()
+        setRegisterErrors(new Map())
+      })
+      .catch((error: { response: { data: RegisterErrorResponse[] } }) => {
+        registerErrors.clear()
+        error.response.data.forEach((error) => {
+          setRegisterErrors(new Map(registerErrors.set(error.param, messages.get(`${error.param}:${error.msg}`))))
+        })
+      })
   }
 
-  const login = (event: BaseSyntheticEvent) => {
+  const login = (event: FormEvent) => {
     event.preventDefault()
-    auth.login(authData)
+    // auth.login(authData)
   }
 
   return (
     <>
       <form onSubmit={ registration }>
-        <input
-          type="email"
-          placeholder="Email"
-          onInput={ (event: BaseSyntheticEvent) => setAuthData({ email: event.target.value }) }
-        />
+        <div>
+          <label>
+            <span>Email</span>
+            <input
+              type="text"
+              placeholder="Email"
+              onInput={(event: FormEvent<HTMLInputElement>) => {
+                setAuthData(new Map(authData.set('email', event.currentTarget.value)))
+              }}
+            />
+          </label>
+          <div>{ registerErrors.get('email') }</div>
+        </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          onInput={ (event: BaseSyntheticEvent) => setAuthData({ password: event.target.value }) }
-        />
+        <div>
+          <label>
+            <span>Password</span>
+            <input
+              type="password"
+              placeholder="Password"
+              onInput={(event: FormEvent<HTMLInputElement>) => {
+                setAuthData(new Map(authData.set('password', event.currentTarget.value)))
+              }}
+            />
+          </label>
+          <div>{ registerErrors.get('password') }</div>
+        </div>
 
         <button
           type="submit"
@@ -43,15 +70,19 @@ const AuthForm = () => {
 
       <form onSubmit={ login }>
         <input
-          type="email"
+          type="text"
           placeholder="Email"
-          onInput={ (event: BaseSyntheticEvent) => setAuthData({ email: event.target.value }) }
+          onInput={(event: FormEvent<HTMLInputElement>) => {
+            setAuthData(new Map(authData.set('email', event.currentTarget.value)))
+          }}
         />
 
         <input
           type="password"
           placeholder="Password"
-          onInput={ (event: BaseSyntheticEvent) => setAuthData({ password: event.target.value }) }
+          onInput={(event: FormEvent<HTMLInputElement>) => {
+            setAuthData(new Map(authData.set('password', event.currentTarget.value)))
+          }}
         />
 
         <button

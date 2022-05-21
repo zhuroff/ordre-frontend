@@ -1,7 +1,7 @@
-import api from 'api'
+import http from 'api'
 import axios from 'axios'
 import UserDTO from 'dtos/UserDTO'
-import { Authentication } from 'types/AuthTypes'
+import { Authentication, AuthenticationMap, AuthenticationResponse } from 'types/AuthTypes'
 import { UserData } from 'types/UserTypes'
 
 type LoginResponse = {
@@ -11,21 +11,27 @@ type LoginResponse = {
 }
 
 export default class AuthService {
-  static async registration({ email, password }: Authentication) {
-    const response = await api.post('auth/registration', { email, password })
-    return response
-  }
+  static async registration(payload: AuthenticationMap) {
+    const response = await http.post<AuthenticationResponse>('auth/registration', Object.fromEntries(payload.entries()))
 
-  static async login({ email, password }: Authentication): Promise<UserDTO> {
-    const response = await api.post<LoginResponse>('auth/login', { email, password })
-    
-    if (response?.status === 200) {
-      localStorage.setItem('token', response.data.accessToken)
-      return new UserDTO(response.data.user)
+    if (response?.status === 201) {
+      return response.data
     }
 
-    localStorage.removeItem('token')
     throw new Error()
+  }
+
+  static async login({ email, password }: Authentication) {
+    const response = await http.post<AuthenticationResponse>('auth/login', { email, password })
+    console.log(response)
+    
+    // if (response?.status === 200) {
+    //   localStorage.setItem('token', response.data.accessToken)
+    //   return new UserDTO(response.data.user)
+    // }
+
+    // localStorage.removeItem('token')
+    // throw new Error()
   }
 
   static async checkIsAuthenticated(): Promise<UserData> {
