@@ -1,14 +1,14 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { AppContext } from 'index'
-import { AuthenticationMap, RegisterErrorResponse } from "types/AuthTypes"
+import { RegistrationMap, RegisterErrorResponse } from "types/AuthTypes"
 import AuthService from 'services/AuthService'
 import messages from 'locales'
 
 const AuthForm = () => {
   const { auth } = AppContext()
 
-  const [authData, setAuthData] = useState<AuthenticationMap>(new Map())
+  const [authData, setAuthData] = useState<RegistrationMap>(new Map())
   const [registerErrors, setRegisterErrors] = useState<Map<string, string>>(new Map())
 
   const registration = (event: FormEvent) => {
@@ -25,11 +25,6 @@ const AuthForm = () => {
           setRegisterErrors(new Map(registerErrors.set(error.param, messages.get(`${error.param}:${error.msg}`))))
         })
       })
-  }
-
-  const login = (event: FormEvent) => {
-    event.preventDefault()
-    // auth.login(authData)
   }
 
   return (
@@ -63,31 +58,23 @@ const AuthForm = () => {
           <div>{ registerErrors.get('password') }</div>
         </div>
 
+        <div>
+          <label>
+            <span>Confirm Password</span>
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              onInput={(event: FormEvent<HTMLInputElement>) => {
+                setAuthData(new Map(authData.set('passwordConfirm', event.currentTarget.value)))
+              }}
+            />
+          </label>
+          <div>{ registerErrors.get('passwordConfirm') }</div>
+        </div>
+
         <button
           type="submit"
         >Зарегистрироваться</button>
-      </form>
-
-      <form onSubmit={ login }>
-        <input
-          type="text"
-          placeholder="Email"
-          onInput={(event: FormEvent<HTMLInputElement>) => {
-            setAuthData(new Map(authData.set('email', event.currentTarget.value)))
-          }}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          onInput={(event: FormEvent<HTMLInputElement>) => {
-            setAuthData(new Map(authData.set('password', event.currentTarget.value)))
-          }}
-        />
-
-        <button
-          type="submit"
-        >Войти</button>
       </form>
     </>
   )

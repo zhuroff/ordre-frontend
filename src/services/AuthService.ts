@@ -1,7 +1,7 @@
 import http from 'api'
 import axios from 'axios'
 import UserDTO from 'dtos/UserDTO'
-import { Authentication, AuthenticationMap, AuthenticationResponse } from 'types/AuthTypes'
+import { Authentication, RegistrationMap, AuthenticationResponse } from 'types/AuthTypes'
 import { UserData } from 'types/UserTypes'
 
 type LoginResponse = {
@@ -11,7 +11,7 @@ type LoginResponse = {
 }
 
 export default class AuthService {
-  static async registration(payload: AuthenticationMap) {
+  static async registration(payload: RegistrationMap) {
     const response = await http.post<AuthenticationResponse>('auth/registration', Object.fromEntries(payload.entries()))
 
     if (response?.status === 201) {

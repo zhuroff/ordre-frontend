@@ -5,7 +5,13 @@ type Authentication = {
   password: string
 }
 
+type Registration = Authentication & {
+  passwordConfirm: string
+}
+
 type AuthenticationMap = Map<keyof Authentication, string>
+
+type RegistrationMap = Map<keyof Registration, string>
 
 type AuthenticationResponse = {
   accessToken: string
@@ -22,7 +28,9 @@ type RegisterErrorResponse = {
 
 export type {
   Authentication,
+  Registration,
   AuthenticationMap,
+  RegistrationMap,
   AuthenticationResponse,
   RegisterErrorResponse
 }
